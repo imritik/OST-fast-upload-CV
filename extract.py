@@ -44,9 +44,9 @@ class Extract():
         self.getEmail(self.text, infoDict=info)
         self.getPhoneNo(self.text, infoDict=info)
         self.getExperience(self.text, infoDict=info)
-        cleanedText, orignalText = self.cleanText(self.text, infoDict=info)
+#         cleanedText, orignalText = self.cleanText(self.text, infoDict=info)
         # self.checkAllKeywords(cleanedText=cleanedText, orignalText=orignalText, infoDict=info)
-        self.getScoreFromFormula(cleanedText=cleanedText, infoDict=info)
+#         self.getScoreFromFormula(cleanedText=cleanedText, infoDict=info)
 
     def preprocess(self, document):
         """
