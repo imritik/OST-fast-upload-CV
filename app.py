@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, jsonify
+import shutil
+from convert import Convert
+from flask import Flask, render_template, request, jsonify,send_from_directory
 from flask.helpers import url_for
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.wrappers.response import Response
@@ -80,6 +82,40 @@ def upload():
     return jsonify(data)
 #     return render_template('home.html', data=data, files=KeywordFile.query.all(), set=Keyword.query.all(), is_active=is_active)
 
+@app.route('/api/convert', methods=['POST'])
+@cross_origin()
+def convert():
+    clearFolder('input/')
+    clearFolder('output/')
+
+    try:
+        file = request.files.get('file[]')
+        file.save(f'input/{file.filename}')
+
+        print(file.filename)
+        Convert(file.filename)
+
+        outputFile = os.listdir('output/')
+
+        return send_from_directory('output/', path=outputFile[0], as_attachment=True)
+
+    except Exception as e:
+        print(e)
+        return Response(json.dumps({'message': 'error'}),
+                        status=500, mimetype='application/json')
+
+
+def clearFolder(path):
+    folder = path
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 @app.route('/addname', methods=["POST", "GET"])
 @cross_origin()
