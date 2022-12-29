@@ -77,8 +77,8 @@ def upload():
 
     is_active = Keyword.query.filter_by(is_active=True).first()
 
-    # return jsonify(data)
-    return render_template('home.html', data=data, files=KeywordFile.query.all(), set=Keyword.query.all(), is_active=is_active)
+    return jsonify(data)
+    # return render_template('home.html', data=data, files=KeywordFile.query.all(), set=Keyword.query.all(), is_active=is_active)
 
 
 @app.route('/addname', methods=["POST", "GET"])
