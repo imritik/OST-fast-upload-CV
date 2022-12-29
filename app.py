@@ -6,12 +6,14 @@ import os
 import json
 import csv
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS, cross_origin
 
 
 UPLOAD_FOLDER = os.path.dirname(
     os.path.abspath(__file__)) + '/uploads/'
 
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///keywords.db'
 
@@ -44,6 +46,7 @@ class KeywordFile(db.Model):
 from extract import Extract
 
 @app.route("/", methods=["POST", "GET"])
+@cross_origin()
 def upload():
     data = []
     if request.method == "POST":
@@ -79,6 +82,7 @@ def upload():
 
 
 @app.route('/addname', methods=["POST", "GET"])
+@cross_origin()
 def addName():
     if request.method == 'POST':
         name = request.form.get('name')
@@ -92,6 +96,7 @@ def addName():
 
 
 @app.route('/uploadKeywords', methods=['GET', 'POST'])
+@cross_origin()
 def uploadKeywords():
 
     if request.method == 'POST':
@@ -126,6 +131,7 @@ def uploadKeywords():
 
 
 @app.route('/addSet', methods=["POST", "GET"])
+@cross_origin()
 def addSet():
     if request.method == 'POST':
         setname = request.form.get('setname')
@@ -182,6 +188,7 @@ def clearCSV():
 
 
 @app.route('/addstopword', methods=['POST', 'GET'])
+@cross_origin()
 def addStopwords():
     data = open('data/stopwords/newStopwords.txt', mode='r').read()
 
