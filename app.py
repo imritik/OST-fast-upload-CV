@@ -20,6 +20,7 @@ app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///keywords.db'
+db.init_app(app)
 
 # db = SQLAlchemy(app)
 
