@@ -103,7 +103,7 @@ def convert():
 
     except Exception as e:
         print(e)
-        return Response(json.dumps({'message': e}),
+        return Response(json.dumps({'message': jsonify(e)}),
                         status=500, mimetype='application/json')
 
 
