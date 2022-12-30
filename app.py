@@ -1,6 +1,7 @@
+from extract import Extract
 import shutil
 from convert import Convert
-from flask import Flask, render_template, request, jsonify,send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask.helpers import url_for
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.wrappers.response import Response
@@ -45,7 +46,7 @@ class KeywordFile(db.Model):
 
 
 ## VIEWS ##
-from extract import Extract
+
 
 @app.route("/", methods=["POST", "GET"])
 @cross_origin()
@@ -82,7 +83,8 @@ def upload():
     return jsonify(data)
 #     return render_template('home.html', data=data, files=KeywordFile.query.all(), set=Keyword.query.all(), is_active=is_active)
 
-@app.route('/api/convert', methods=['POST'])
+
+@app.route('/api/convert', methods=["POST"])
 @cross_origin()
 def convert():
     clearFolder('input/')
@@ -101,7 +103,7 @@ def convert():
 
     except Exception as e:
         print(e)
-        return Response(json.dumps({'message': 'error'}),
+        return Response(json.dumps({'message': e}),
                         status=500, mimetype='application/json')
 
 
@@ -116,6 +118,7 @@ def clearFolder(path):
                 shutil.rmtree(file_path)
         except Exception as e:
             print('Failed to delete %s. Reason: %s' % (file_path, e))
+
 
 @app.route('/addname', methods=["POST", "GET"])
 @cross_origin()
