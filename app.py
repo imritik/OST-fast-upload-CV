@@ -8,9 +8,10 @@ from werkzeug.wrappers.response import Response
 import os
 import json
 import csv
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
-
+from models.db import db
+from models.model import Keyword,KeywordFile
 
 UPLOAD_FOLDER = os.path.dirname(
     os.path.abspath(__file__)) + '/uploads/'
@@ -20,29 +21,29 @@ CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///keywords.db'
 
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
-## MODELS ##
-
-
-class Keyword(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    file = db.relationship(
-        "KeywordFile", backref=db.backref('keyword', uselist=False), lazy='dynamic')
-    is_active = db.Column(db.Boolean, default=False, nullable=False)
+# ## MODELS ##
 
 
-class KeywordFile(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    primaryfile = db.Column(db.LargeBinary(), nullable=False)
-    secondaryfile = db.Column(db.LargeBinary())
+# class Keyword(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50), unique=True, nullable=False)
+#     file = db.relationship(
+#         "KeywordFile", backref=db.backref('keyword', uselist=False), lazy='dynamic')
+#     is_active = db.Column(db.Boolean, default=False, nullable=False)
 
-    keyword_id = db.Column(db.Integer, db.ForeignKey('keyword.id'))
 
-    def __repr__(self) -> str:
-        return self.name
+# class KeywordFile(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50), nullable=False)
+#     primaryfile = db.Column(db.LargeBinary(), nullable=False)
+#     secondaryfile = db.Column(db.LargeBinary())
+
+#     keyword_id = db.Column(db.Integer, db.ForeignKey('keyword.id'))
+
+#     def __repr__(self) -> str:
+#         return self.name
 
 
 ## VIEWS ##
@@ -103,7 +104,7 @@ def convert():
 
     except Exception as e:
         print(e)
-        return Response(json.dumps({'message': jsonify(e)}),
+        return Response(json.dumps({'message': 'error'}),
                         status=500, mimetype='application/json')
 
 
@@ -241,3 +242,6 @@ def addStopwords():
         data = open('data/stopwords/newStopwords.txt', mode='r').read()
 
     return render_template('uploadStopwords.html', data=data)
+
+if __name__ == "__main__":
+  app.run()
