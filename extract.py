@@ -3,7 +3,6 @@ import nltk
 import re
 import time
 import os
-
 import textract
 
 from models.model import Keyword, KeywordFile
@@ -31,6 +30,20 @@ class Extract():
                 self.text = open(filepath).read()
             elif ext == 'doc' or ext == 'docx':
                 self.text = textract.process(filepath).decode('utf-8')
+            # elif ext == 'doc':
+            #     self.text =  open(filepath, 'r').read().encode('utf-8')
+            #     print(self.text)
+                # (fi, fo, fe) = os.popen('antiword "%s"' % filepath)
+                # fi.close()
+                # retval = fo.read()
+                # erroroutput = fe.read()
+                # fo.close()
+                # fe.close()
+                # if not erroroutput:
+                #     self.text = retval
+                # else:
+                #     raise OSError(
+                #         "Executing the command caused an error: %s" % erroroutput)
             else:
                 print("Unsupported Format")
 
@@ -45,7 +58,8 @@ class Extract():
         self.getPhoneNo(self.text, infoDict=info)
         self.getExperience(self.text, infoDict=info)
         cleanedText, orignalText = self.cleanText(self.text, infoDict=info)
-        self.checkAllKeywords(cleanedText=cleanedText, orignalText=orignalText, infoDict=info)
+        self.checkAllKeywords(cleanedText=cleanedText,
+                              orignalText=orignalText, infoDict=info)
 #         self.getScoreFromFormula(cleanedText=cleanedText, infoDict=info)
 
     def preprocess(self, document):

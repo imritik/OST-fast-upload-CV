@@ -1,0 +1,95 @@
+h1{
+    margin: 20px;
+}
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+  }
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 2.5rem;
+    width: 100%;
+    background-color: rgb(50, 135, 214);
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+}
+
+nav .nav-item{
+    margin-right: 20px;
+}
+
+.content-wrap {
+    padding-bottom: 2.5rem;    /* Footer height */
+  }
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+.icon{
+    padding: 8px 5px;
+}
+
+.personal-info{
+    text-align: end;
+    padding-right: 12px;
+}
+
+td, th{
+    max-width: 150px;
+    word-wrap: break-word;
+}
+
+.table-body{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    margin: 0 60px;
+}
+
+.table{
+    font-size: 12px;
+}
+
+a{
+    color: black;
+}
+
+#correct-name{
+    margin : 10px 0;
+}
+
+.card-body{
+    position: relative;
+}
+
+#all-btn{
+    display: inline-block;
+    align-self: flex-end;
+    position: absolute;
+    right: 15px;
+}
+
+.card-text{
+    margin: 10px;
+}
+
+.card-title{
+    display: inline-block;
+}
+
+.margin-5{
+    margin: 2% 0;
+}
+
+#current{
+    border: 3px black solid;
+    padding: 5px;
+    border-radius: 5px;
+}
