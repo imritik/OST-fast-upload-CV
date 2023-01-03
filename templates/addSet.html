@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% include 'navbar.html' %}
+
+{% block content %}
+<div class="container">
+    <h3 class="margin-5">Select profile</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <select class="form-select margin-5" aria-label="Default select example" name='getname' required>
+            {% for obj in set %}
+            <option value="{{ obj.name }}">{{obj.name}}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+    <hr>
+</div>
+
+<div class="container">
+    <h3 class="margin-5">Enter name of set you want to add.</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="text" name="setname" class="margin-5 form-control" placeholder="Enter name of new file" required>
+        <input type="submit" value="Add" class="btn btn-primary">
+    </form>
+</div>
+
+{% endblock %}

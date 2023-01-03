@@ -1,88 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
-    <title>Documentation</title>
-</head>
+{% block content %}
 
 <body>
+    <div class="page-container">
+        <div class="content-wrap">
+            <nav class="navbar">
+                <a href="{{ url_for('cvTesting') }}">
+                    <h1>Home</h1>
+                </a>
+                <ul class='nav'>
+                    <li class="nav-item">
+                        <h4 id="current">Currently using : {{ is_active.name }}</h4>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('addSet') }}">Add/Select Profiles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-danger" href="{{ url_for('clearCSV') }}" data-bs-toggle="tooltip"
+                            data-bs-placement="left" title="Clears current CSV files">Clear Session</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('uploadKeywords') }}">Upload Keywords File</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('addStopwords') }}">Upload Stopwords File</a>
+                    </li>
+                </ul>
+            </nav>
 
+            <div class="container">
+                <div class="mb-3">
 
-    <nav class="nav">
-        <h1 class="nav-link">Documentation</h1>
-    </nav>
+                    <h3>Upload Files</h3>
+                    <p>It may take a some time to get your output. Please be patient. <b> Do not upload more than 10
+                            files
+                            at once. </b></p>
+                    <b>.pdf/.doc/.docx/.txt files supported.</b> <small>(Hold ctrl to select multiple files)</small>
 
-    <div class="container">
-        There are following endpoints.
-        <ol>
-            <li><a href="">cv-extract-api-2000.herokuapp.com/api/extract</a></li>
-            <p>
-            <ul>
-                <li> Method allowed - POST </li>
-                <li> Paramaters - <b>files[]</b> -
-                    File/Files in pdf format. </li>
-                <li> Returns - Name, Email, PhoneNo, Experience, Original Text extracted from the CV in json format.
-                </li>
-                Example : <br>
-                <pre>
-                <code>
-                    import requests
+                    <div class="input-group flex-nowrap">
+                        <form method="POST" enctype="multipart/form-data" class="input-group flex-nowrap">
+                            <input type="file" name="files[]" multiple="" class="form-control" required>
+                            <input type="submit" value="Submit" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
 
-                    url = 'http://127.0.0.1:5000/api/extract'
-                    files = {'files[]': open('data/sample.pdf', 'rb')}
-                    
-                    r = requests.post(url, files=files)
-                    r.json()
-                </code>
-            </pre>
+                {% if data %}
 
-            </ul>
-            </p>
+                <hr>
 
-            <li><a href="">cv-extract-api-2000.herokuapp.com/api/addname</a></li>
-            <p>
-            <ul>
-                <li> Method allowed - POST </li>
-                <li> Paramaters - <b>name</b> -
-                    first names or list of names to be added seperated
-                    by space. Ex - name1 name2 name3 </li>
-                <li> Returns -{ message : success } if word is added, else { message : error }
-                </li>
-                Example : <br>
-                <pre>
-                <code>
-                    import requests
-                    url = 'http://127.0.0.1:5000/api/addname'
-                    params = {"name": "tom jack jones rambo"}
-                    r = requests.get(url = URL, params = params)
-                    r.json()
-                </code>
-            </pre>
-            </ul>
-            </p>
+                <div class="mb-3">
+                    <a class="btn btn-primary" href="{{ url_for('downloadCSV') }}">downloadCSV</a>
+                </div>
 
+                {% endif %}
 
-            <li><a href="">cv-extract-api-2000.herokuapp.com/api/keyword</a></li>
-            <p>
-            <ul>
-                <li> Method allowed - POST / GET </li>
-                <li> <b> POST </b> - takes a <b>.txt</b> file with key <b>"file[]"</b> -
-                    text file with keywords seperated by comma. </li>
-                <li> <b> GET </b> - return current set of keywords. </li>
-            </ul>
-            </p>
-        </ol>
+            </div>
 
+            <div class='table-body'>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Filename</th>
+                                <th scope="col">Name of Applicant</th>
+                                <th scope="col">Primary email</th>
+                                <th scope="col">Other email</th>
+                                <th scope="col">Mobile Number</th>
+                                <th scope="col">Experience</th>
+                                <th scope="col">Original Text</th>
+                                <th scope="col">Cleaned Text</th>
+
+                                <!-- {% for file in set %}
+                                <th scope="col">{{ file.name }} percentage</th>
+                                <th scope="col">{{ file.name }} score</th>
+                                {% endfor %} -->
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for f in data %}
+
+                            <tr>
+                                <td scope="row">
+                                    {{loop.index}}
+                                </td>
+                                <td scope="row">
+                                    {{f['filename']}}
+                                </td>
+                                <td scope="row">
+                                    {{f['name']}}
+                                </td>
+                                <td scope="row">
+                                    {{f.email[0]}}
+                                </td>
+                                <td scope="row">
+                                    {{f.email[1]}}
+                                </td>
+                                <td scope="row">
+                                    {{f.phoneNo[0]}}
+                                </td>
+                                <td scope="row">
+                                    {{f.experience}}
+                                </td>
+                                </td>
+                                <td scope="row">
+                                    {{f.original_text|truncate(100)}}
+                                </td>
+                                <td scope="row">
+                                    {{f.cleaned_text|truncate(100)}}
+                                </td>
+
+                                <!-- {% for file in files %}
+                                <td scope="row">{{f['percentageCleaned' + file.name]}}%</td>
+                                <td scope="row">{{f['score' + file.name]}}</td>
+                                {% endfor %} -->
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mb-3">
+                    <h4>Improve our Algorithm.</h4>
+                    <form action="" id="name-form" method="post" onsubmit="return sendNameForm()">
+                        <label for="correctName"><b>Enter correct first name/names here.</b></label>
+                        <input type="text" class="form-control" name="correctName" id="correct-name"
+                            placeholder="Press Enter to submit.">
+                    </form>
+                    <p>
+                        <small>If the algorithm predicts a wrong name, enter correct first name or multiple first names
+                            seperated
+                            be spaces. See example below for reference.<br>
+                            <b> name1 name2 name3 </b>.</small>
+                    </p>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+        <!-- <footer>
+            <div class="personal-info">
+                <a href="https://github.com/Harshit-2000"><img class="icon"
+                        src="{{ url_for('static',filename='images/github-logo.png') }}" alt="Github"></a>
+                <a href="https://www.linkedin.com/in/harshit-singh-2000/"><img class="icon"
+                        src="{{ url_for('static',filename='images/linkedin-logo.png') }}" alt="Linkedin"></a>
+            </div>
+        </footer> -->
     </div>
+
+    <!-- Show toast when submitted -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-header">
+                <img src="{{ url_for('static', filename='images/tick.png') }}" class="rounded me-2" alt="...">
+                <strong class="me-auto">Names added successfully.</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Thankyou for making our algorithm better.
+            </div>
+        </div>
+    </div>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
 
 </body>
 
-</html>
+{% endblock %}

@@ -1,0 +1,29 @@
+<nav class="navbar">
+    <a href="{{ url_for('cvTesting') }}">
+        <h1>Home</h1>
+    </a>
+    <ul class='nav'>
+        <li class="nav-item">
+            <h4 id="current">Currently using :
+                {% if is_active %}
+                {{ is_active.name }}
+                {% else %}
+                None
+                {% endif %}
+            </h4>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('addSet') }}">Add/Select Profiles</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-danger" href="{{ url_for('clearCSV') }}" data-bs-toggle="tooltip" data-bs-placement="left"
+                title="Clears current CSV files">Clear Session</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('uploadKeywords') }}">Upload Keywords File</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('addStopwords') }}">Upload Stopwords File</a>
+        </li>
+    </ul>
+</nav>

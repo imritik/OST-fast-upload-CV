@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<body>
+
+    <div class='navbar'>
+        <a href="{{ url_for('cvTesting') }}">
+            <h1>Home</h1>
+        </a>
+    </div>
+
+    <div class="container">
+        <h2>Upload stopwords file here.</h2>
+        <p>Words to remove form the resume.</p>
+        <div class="mb-3">
+            <b>Upload a .txt file with comma seperated words.</b>
+            <div class="input-group flex-nowrap">
+                <form method="POST" enctype="multipart/form-data" class="input-group flex-nowrap">
+                    <input type="file" name="file" class="form-control" required>
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+        <h3>Current set of words.</h3>
+        <p>{{ data }}</p>
+    </div>
+
+</body>
+
+{% endblock %}

@@ -50,6 +50,42 @@ db.init_app(app)
 ## VIEWS ##
 
 
+@app.route("/cv-testing", methods=["POST", "GET"])
+@cross_origin()
+def cvTesting():
+    data = []
+    if request.method == "POST":
+        files = request.files.getlist("files[]")
+
+        for file in files:
+            if file.filename == '':
+                continue
+            tempdata = {}
+            tempdata["filename"] = file.filename
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+
+            Extract(filepath, tempdata)
+            os.unlink('uploads/' + filename)
+            data.append(tempdata)
+
+    try:
+        field_names = data[0].keys()
+        with open('data/data.csv', mode='a', encoding="utf-8") as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=field_names)
+            if not os.stat('data/data.csv').st_size > 0:
+                writer.writeheader()
+            writer.writerows(data)
+    except Exception as e:
+        print(e)
+
+    is_active = Keyword.query.filter_by(is_active=True).first()
+
+    # return jsonify(data)
+    return render_template('home.html', data=data, files=KeywordFile.query.all(), set=Keyword.query.all(), is_active=is_active)
+
+
 @app.route("/", methods=["POST", "GET"])
 @cross_origin()
 def upload():
@@ -222,7 +258,7 @@ def clearCSV():
     try:
         with open('data/data.csv', mode='w', encoding="utf-8") as csvfile:
             csvfile.truncate(0)
-        return redirect(url_for('upload'))
+        return redirect(url_for('cvTesting'))
     except Exception as e:
         print(e)
         return Response(json.dumps({'message': 'error'}), status=500, mimetype='application/json')
