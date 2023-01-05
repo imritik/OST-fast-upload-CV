@@ -3,9 +3,10 @@ import nltk
 import re
 import time
 import os
+
 import textract
 
-from models.model import Keyword, KeywordFile
+from app import Keyword, KeywordFile
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -30,20 +31,6 @@ class Extract():
                 self.text = open(filepath).read()
             elif ext == 'doc' or ext == 'docx':
                 self.text = textract.process(filepath).decode('utf-8')
-            # elif ext == 'doc':
-            #     self.text =  open(filepath, 'r').read().encode('utf-8')
-            #     print(self.text)
-                # (fi, fo, fe) = os.popen('antiword "%s"' % filepath)
-                # fi.close()
-                # retval = fo.read()
-                # erroroutput = fe.read()
-                # fo.close()
-                # fe.close()
-                # if not erroroutput:
-                #     self.text = retval
-                # else:
-                #     raise OSError(
-                #         "Executing the command caused an error: %s" % erroroutput)
             else:
                 print("Unsupported Format")
 
@@ -58,9 +45,8 @@ class Extract():
         self.getPhoneNo(self.text, infoDict=info)
         self.getExperience(self.text, infoDict=info)
         cleanedText, orignalText = self.cleanText(self.text, infoDict=info)
-        self.checkAllKeywords(cleanedText=cleanedText,
-                              orignalText=orignalText, infoDict=info)
-#         self.getScoreFromFormula(cleanedText=cleanedText, infoDict=info)
+        # self.checkAllKeywords(cleanedText=cleanedText, orignalText=orignalText, infoDict=info)
+        self.getScoreFromFormula(cleanedText=cleanedText, infoDict=info)
 
     def preprocess(self, document):
         """
@@ -197,23 +183,27 @@ class Extract():
 
         return phone
 
-    def getScoreForEachBracket(self, cleanedText, infoDict, bracket, count, found):
+    def getScoreForEachBracket(self, cleanedText, infoDict, bracket, count, found, print=True):
         """
         calcuates score for each bracket and returns the score
         """
 
         score = 0
+        freqScore = 0
         bracket = bracket.split('+')
 
         for word in bracket:
             word = word.strip()
-            if word in cleanedText:
+            match = re.findall(word, cleanedText)
+            freqScore += len(match)
+            if len(match) > 0:
                 score += 1
                 found.append(word)
 
-        infoDict[f'Score For Bracket {count}'] = score
+        if print:
+            infoDict[f'Score For Bracket {count}'] = score
 
-        return score
+        return score, freqScore
 
     def getScoreFromFormula(self, cleanedText, infoDict):
         """
@@ -223,7 +213,9 @@ class Extract():
 
         formula = ['']
         score = 0
+        freqScore = 0
         multiScore = 1
+        multifreqScore = 1
         found = []
 
         try:
@@ -232,27 +224,54 @@ class Extract():
             else:
                 formula = ''
 
-            eachBracket = formula.split('*')
+            eachBracket = ["*"]
+            temp = ""
+            for c in formula:
+                if c == '*' or c == '-':
+                    eachBracket.append(temp)
+                    eachBracket.append(c)
+                    temp = ""
+                else:
+                    temp += c
+
+            if len(temp) > 0:
+                eachBracket.append(temp)
 
             cnt = 1
-            for bracket in eachBracket:
-                bracket = bracket.lower().strip()
-                bracket = bracket[1:-1]
+            negCount = 0
+            negWords = []
+            for i, bracket in enumerate(eachBracket):
+                if bracket != "*" and bracket != "-":
+                    bracket = bracket.lower().strip()
+                    bracket = bracket[1:-1]
 
-                bracketScore = self.getScoreForEachBracket(
-                    cleanedText, infoDict, bracket, cnt, found)
+                    if (eachBracket[i - 1] == "*"):
+                        bracketScore, bracketfreqScore = self.getScoreForEachBracket(
+                            cleanedText, infoDict, bracket, cnt, found)
 
-                score += bracketScore
-                multiScore *= bracketScore
+                        freqScore += bracketfreqScore
+                        score += bracketScore
 
-                cnt += 1
+                        multifreqScore *= bracketfreqScore
+                        multiScore *= bracketScore
+                    else:
+                        bracket = bracket.split('+')
+                        for word in bracket:
+                            if word in cleanedText:
+                                negCount += 1
+                                negWords.append(word)
+                    cnt += 1
 
             infoDict['Final Score'] = score
             infoDict['Multiplied Score'] = multiScore
+            infoDict['Frequency Score'] = freqScore
+            infoDict['Multiplied frequency Score'] = multifreqScore
             infoDict['Found Words'] = found
+            infoDict["Negative Count"] = negCount
+            infoDict["Negative words found"] = negWords
 
         except Exception as e:
-            print("Error occured!")
+            print("Error occured! 1")
             print(e)
 
     def checkKeywords(self, totalCleanedWords, totalOrignalWords, cleanedText, infoDict, file):

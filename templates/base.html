@@ -11,11 +11,36 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/basic.min.css" />
+    <script type="application/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
+        </script>
+
+
+
     <title>Home</title>
 </head>
 
 {% block content %}
 
 {% endblock %}
+
+
+<script type="application/javascript">
+    Dropzone.options.dropper = {
+        paramName: 'files[]',
+        chunking: true,
+        forceChunking: true,
+        url: '/',
+        maxFilesize: 1025,
+        chunkSize: 1000000,
+        acceptedFiles: '.pdf, .txt, .doc, .docx',
+        createImageThumbnails: false
+    }
+</script>
 
 </html>

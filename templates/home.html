@@ -21,7 +21,7 @@
                             data-bs-placement="left" title="Clears current CSV files">Clear Session</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-primary" href="{{ url_for('uploadKeywords') }}">Upload Keywords File</a>
+                        <a class="btn btn-primary" href="{{ url_for('uploadKeywords') }}">Upload Formula File</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-primary" href="{{ url_for('addStopwords') }}">Upload Stopwords File</a>
@@ -36,17 +36,22 @@
                     <p>It may take a some time to get your output. Please be patient. <b> Do not upload more than 10
                             files
                             at once. </b></p>
-                    <b>.pdf/.docx/.txt files supported.</b> <small>(Hold ctrl to select multiple files)</small>
+                    <b>.pdf/.doc/.docx/.txt files supported.</b> <small>(Drag and drop folder to upload all files.)</small>
 
-                    <div class="input-group flex-nowrap">
+                    <form method="POST" action='/' class="dropzone dz-clickable" id="dropper"
+                        enctype="multipart/form-data">
+                    </form>
+
+
+                    <!-- <div class="input-group flex-nowrap">
                         <form method="POST" enctype="multipart/form-data" class="input-group flex-nowrap">
                             <input type="file" name="files[]" multiple="" class="form-control" required>
                             <input type="submit" value="Submit" class="btn btn-primary">
                         </form>
-                    </div>
+                    </div> -->
                 </div>
 
-                {% if data %}
+
 
                 <hr>
 
@@ -54,14 +59,14 @@
                     <a class="btn btn-primary" href="{{ url_for('downloadCSV') }}">downloadCSV</a>
                 </div>
 
-                {% endif %}
+
 
             </div>
 
             <div class='table-body'>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover table-bordered" cellspacing="0" width="100%">
-                        <thead>
+                        <!-- <thead>
                             <tr>
                                 <th scope="col">No.</th>
                                 <th scope="col">Filename</th>
@@ -73,12 +78,8 @@
                                 <th scope="col">Original Text</th>
                                 <th scope="col">Cleaned Text</th>
 
-                                <!-- {% for file in set %}
-                                <th scope="col">{{ file.name }} percentage</th>
-                                <th scope="col">{{ file.name }} score</th>
-                                {% endfor %} -->
                             </tr>
-                        </thead>
+                        </thead> -->
 
                         <tbody>
                             {% for f in data %}

@@ -23,15 +23,15 @@
             <br>
             <form method="POST" enctype="multipart/form-data">
                 <div class="margin-5">
-                    <label for="pFile"> <b> Primary Keyword File (required) </b> </label>
+                    <label for="pFile"> <b> Formula File (required) </b> </label>
                     <input type="file" name="pFile" class="form-control" required>
                 </div>
-                <div class="margin-5">
+                <!-- <div class="margin-5">
                     <label for="sFile"> <b> Secondary Keyword File </b> </label>
                     <input type="file" name="sFile" class="form-control">
-                </div>
+                </div> -->
                 <input type="text" name="filename" class="margin-5 form-control"
-                    placeholder="Enter name of keywords file." required>
+                    placeholder="Enter name of Formula file." required>
                 <input type="submit" value="Submit" class="btn btn-primary">
             </form>
         </div>
@@ -50,14 +50,14 @@
                             class="btn btn-danger">Delete</a>
                     </div>
                     <br>
-                    <b>Primary Keywords</b>
+                    <b>Current Formula</b>
                     <p class="card-text">
                         {{file.primaryfile.decode('utf-8')}}
                     </p>
-                    <b>Secondary Secondary</b>
+                    <!-- <b>Secondary Secondary</b>
                     <p class="card-text">
                         {{file.secondaryfile.decode('utf-8')}}
-                    </p>
+                    </p> -->
                 </div>
             </div>
             {% endfor %}
