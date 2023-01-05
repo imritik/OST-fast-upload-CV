@@ -6,7 +6,7 @@ import os
 
 import textract
 
-from app import Keyword, KeywordFile
+from models.model import Keyword, KeywordFile
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
